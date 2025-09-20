@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -26,9 +27,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
         <TanStackProvider>
           <Header />
           <main>{children}</main>
-          <footer>
-            <p>Created <time dateTime="2025">2025</time></p>
-          </footer>
+         <Footer />
         </TanStackProvider>
       </body>
     </html>

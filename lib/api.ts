@@ -1,30 +1,49 @@
-
-
+// src/services/noteService.ts
+import type { AxiosResponse } from "axios";
 import axios from "axios";
+import type { Note } from "../types/note";
 
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  categoryId: string;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  headers: {
+    Authorization: `${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
+  },
+});
 
-export type NoteListResponse = {
+// Тип відповіді для колекції нотаток
+export interface NotesResponse {
   notes: Note[];
-  total: number;
-};
+  totalPages: number;
+}
 
-axios.defaults.baseURL = `https://next-docs-api.onrender.com`;
+// 1. Отримати список нотаток (підтримує пагінацію та пошук)
+export async function fetchNotes(
+  search?: string,
+  page: number = 1
+): Promise<NotesResponse> {
+  const response: AxiosResponse<NotesResponse> = await api.get("/notes", {
+    params: {
+      page,
+      ...(search ? { search } : {}),
+    },
+  });
+  return response.data;
+}
 
-export const getNotes = async () => {
-  const res = await axios.get<NoteListResponse>("/notes");
-  return res.data;
-};
+// 2. Створити нову нотатку
+export async function createNote(data: { title: string; content: string; tag: string }): Promise<Note> {
+  const response: AxiosResponse<Note> = await api.post("/notes", data);
+  return response.data;
+}
 
-export const getSingleNote = async (id: string) => {
-  const res = await axios.get<Note>(`/notes/${id}`);
-  return res.data;
-};
+// 3. Видалити нотатку
+export async function deleteNote(id: string): Promise<Note> {
+  const response: AxiosResponse<Note> = await api.delete(`/notes/${id}`);
+  return response.data;
+}
+
+
+export async function getSingleNote(id: string): Promise<Note> {
+  const response: AxiosResponse<Note> = await api.get(`/notes/${id}`);
+  return response.data;
+}

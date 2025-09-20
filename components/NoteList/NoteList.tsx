@@ -1,20 +1,48 @@
-// components/NoteList/NoteList.tsx
-
-import { Note } from "@/lib/api";
-import NoteItem from "../NoteItem/NoteItem";
-
-type Props = {
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
+import { deleteNote } from '../../lib/api';
+import type { Note } from '../../types/note';
+import css from './NoteList.module.css';
+interface NoteListProps {
   notes: Note[];
-};
+}
 
-const NoteList = ({ notes }: Props) => {
+export default function NoteList({ notes = [] }: NoteListProps) {
+  const queryClient = useQueryClient();
+
+const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteNote(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+    },
+  });
+
+
+  if (notes.length === 0) {
+    return null; // нічого не рендеримо, якщо масив пустий
+
+  }
+
+
+
+  const handleDeleteNote = (id: string) => {
+    deleteMutation.mutate(id);
+  }
+
+
   return (
-    <ul>
+    <ul className={css.list}>
       {notes.map((note) => (
-        <NoteItem key={note.id} item={note} />
+        <li key={note.id} className={css.listItem}>
+          <h2 className={css.title}>{note.title}</h2>
+          <p className={css.content}>{note.content}</p>
+          <div className={css.footer}>
+            <span className={css.tag}>{note.tag}</span>
+            <Link className={css.link} href={`/notes/${note.id}`}>View details</Link>
+            <button onClick={() => handleDeleteNote(note.id)} className={css.button}>Delete</button>
+          </div>
+        </li>
       ))}
     </ul>
   );
 }
-
-export default NoteList;
