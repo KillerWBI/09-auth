@@ -9,13 +9,22 @@ interface ModalProps {
 
 export default function Modal({ onClose, children }: ModalProps) {
   useEffect(() => {
+    // Закриття по Escape
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // 🔒 Відключаємо прокрутку
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      // 🔓 Повертаємо скрол
+      document.body.style.overflow = '';
+    };
   }, [onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
