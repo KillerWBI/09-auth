@@ -19,12 +19,14 @@ export interface NotesResponse {
 // 1. Отримати список нотаток (підтримує пагінацію та пошук)
 export async function fetchNotes(
   search?: string,
-  page: number = 1
+  page: number = 1,
+  tag?: string
 ): Promise<NotesResponse> {
   const response: AxiosResponse<NotesResponse> = await api.get("/notes", {
     params: {
       page,
       ...(search ? { search } : {}),
+      ...(tag ? { tag } : {}),
     },
   });
   return response.data;
