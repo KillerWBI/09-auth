@@ -3,24 +3,23 @@ import { fetchNotes } from "../../../../lib/api";
 import NotesClient from "./Notes.client";
 
 interface NotesPageProps {
-  params: { slug?: string[] };
+  params: Promise<{ slug: string[] }>;
 }
 
 export default async function NotesPage({ params }: NotesPageProps) {
+  const { slug } = await params;
   const queryClient = new QueryClient();
 
+  const tag = slug?.[0] === "All" ? "" : slug?.[0] || "";
 
-const tag = params.slug?.[0] === "All" ? "" : params.slug?.[0] || "";
-
-  // Prefetch першої сторінки без пошуку
   await queryClient.prefetchQuery({
-    queryKey: ['notes', '', 1],
-    queryFn: () => fetchNotes('', 1),
+    queryKey: ["notes", tag, 1],
+    queryFn: () => fetchNotes(tag, 1),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotesClient tag={tag}/>
+      <NotesClient tag={tag} />
     </HydrationBoundary>
   );
 }
