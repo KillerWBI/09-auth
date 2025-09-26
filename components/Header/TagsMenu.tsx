@@ -24,7 +24,7 @@ function TagsMenu() {
               <Link
                 href={`/notes/filter/${tag}`}
                 className={css.menuLink}
-                onClick={closeMenu} // закрываем меню при выборе
+                onClick={closeMenu}
               >
                 {tag}
               </Link>
