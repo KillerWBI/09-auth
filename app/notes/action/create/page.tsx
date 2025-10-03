@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import css from "./Home.module.css";
+import css from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "not-found Note",
+  title: "Create Note",
   description: "NoteHub - your personal note-taking app",
   openGraph : {
     title: 'NoteHub - Page Not Found',
@@ -20,11 +20,16 @@ export const metadata: Metadata = {
 };
 
 
-export default function NotFoundPage() {
-  return (
-    <div className={css.container}>
-      <h1 className={css.title}>404 - Page not found</h1>
-      <p className={css.description}>Sorry, the page you are looking for does not exist.</p>
-    </div>
+
+function CreateNotePage() {
+  return  (
+<main className={css.main}>
+  <div className={css.container}>
+    <h1 className={css.title}>Create note</h1>
+	   {/* NoteForm component */}
+  </div>
+</main>
   );
+
 }
+export default CreateNotePage;

@@ -1,19 +1,17 @@
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto } from "next/font/google";
 import TanStackProvider from "../components/TanStackProvider/TanStackProvider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const roboto = Roboto({
+  weight: ["400", "500", "700"], // какие начертания нужны
+  subsets: ["latin", "cyrillic"], // можно оставить только "latin", если кириллица не нужна
+  display: "swap",               // чтобы не было задержки при загрузке
+  variable: "--font-roboto",     // создаст CSS-переменную для использования
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Note",
@@ -36,7 +34,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children, modal}: Readonly<{ children: React.ReactNode; modal: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${roboto.variable}`}>
         <TanStackProvider>
           <Header />
           <main>

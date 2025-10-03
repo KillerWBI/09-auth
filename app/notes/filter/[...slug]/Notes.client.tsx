@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { useDebounce } from "use-debounce";
 import Modal from '../../../../components/Modal/Modal';
@@ -50,12 +51,9 @@ export default function NotesClient({ tag }: NotesClientProps) {
               onPageChange={handlePageChange}
             />
           )}
-          <button
-            className={css.button}
-            onClick={() => setIsOpenModal(true)}
-          >
-            Create note +
-          </button>
+
+          <Link className={css.button} href={`/notes/action/create`}>Create note +</Link>
+
         </header>
         {isLoading && <p>Loading...</p>}
         {error && <p>Error loading notes</p>}
