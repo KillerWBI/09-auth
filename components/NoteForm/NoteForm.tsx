@@ -1,14 +1,13 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from 'next/navigation';
 import * as Yup from "yup";
 import { ValidationError } from "yup";
 import { createNote } from "../../lib/api";
+import { useNoteDraftStore } from "../../lib/store/noteStore";
 import css from "./NoteForm.module.css";
 
-interface NoteFormProps {
-  onCancel: () => void;
-}
 
 interface NoteFormValues {
   title: string;
@@ -27,14 +26,16 @@ const validationSchema = Yup.object({
     .required("Обов'язкове поле"),
 });
 
-export default function NoteForm({ onCancel }: NoteFormProps) {
+export default function NoteForm() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (values: NoteFormValues) => createNote(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      onCancel();
+      router.back();
+      clearDraft();
+      router.push('/notes/filter/all');
     },
   });
 
@@ -57,11 +58,30 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
     }
   }
 
+ const { draft, setDraft, clearDraft } = useNoteDraftStore();
+const router = useRouter();
+const routerBack = router.back;
+
+
+const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+
+    setDraft({
+      ...draft,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+
+
   return (
     <form action={handleAction} className={css.form}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
-        <input id="title" name="title" type="text" className={css.input} />
+        <input id="title" name="title" type="text" className={css.input} defaultValue={draft?.title} onChange={handleChange}/>
       </div>
 
       <div className={css.formGroup}>
@@ -71,12 +91,13 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
           name="content"
           rows={8}
           className={css.textarea}
+          defaultValue={draft?.content} onChange={handleChange}
         />
       </div>
 
       <div className={css.formGroup}>
         <label htmlFor="tag">Tag</label>
-        <select id="tag" name="tag" className={css.select}>
+        <select id="tag" name="tag" className={css.select} defaultValue={draft?.tag} onChange={handleChange}>
           <option value="">Select tag</option>
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
@@ -90,7 +111,7 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
         <button
           type="button"
           className={css.cancelButton}
-          onClick={onCancel}
+          onClick={routerBack}
         >
           Cancel
         </button>

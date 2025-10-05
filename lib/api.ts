@@ -16,6 +16,13 @@ export interface NotesResponse {
   totalPages: number;
 }
 
+export interface NewNoteData {
+  title: string;
+  content: string;
+  tag: string;
+}
+
+
 // 1. Отримати список нотаток (підтримує пагінацію та пошук)
 export async function fetchNotes(
   search?: string,
@@ -33,7 +40,7 @@ export async function fetchNotes(
 }
 
 // 2. Створити нову нотатку
-export async function createNote(data: { title: string; content: string; tag: string }): Promise<Note> {
+export async function createNote(data: NewNoteData): Promise<Note> {
   const response: AxiosResponse<Note> = await api.post("/notes", data);
   return response.data;
 }
