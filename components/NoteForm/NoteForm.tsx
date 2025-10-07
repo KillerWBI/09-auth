@@ -26,7 +26,11 @@ const validationSchema = Yup.object({
     .required("Обов'язкове поле"),
 });
 
+
+
 export default function NoteForm() {
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -35,7 +39,6 @@ export default function NoteForm() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       router.back();
       clearDraft();
-      router.push('/notes/filter/all');
     },
   });
 
@@ -58,8 +61,6 @@ export default function NoteForm() {
     }
   }
 
- const { draft, setDraft, clearDraft } = useNoteDraftStore();
-const router = useRouter();
 const routerBack = router.back;
 
 
@@ -81,7 +82,7 @@ const handleChange = (
     <form action={handleAction} className={css.form}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
-        <input id="title" name="title" type="text" className={css.input} defaultValue={draft?.title} onChange={handleChange}/>
+        <input id="title" name="title" type="text" className={css.input} value={draft?.title} onChange={handleChange}/>
       </div>
 
       <div className={css.formGroup}>
@@ -91,13 +92,13 @@ const handleChange = (
           name="content"
           rows={8}
           className={css.textarea}
-          defaultValue={draft?.content} onChange={handleChange}
+          value={draft?.content} onChange={handleChange}
         />
       </div>
 
       <div className={css.formGroup}>
         <label htmlFor="tag">Tag</label>
-        <select id="tag" name="tag" className={css.select} defaultValue={draft?.tag} onChange={handleChange}>
+        <select id="tag" name="tag" className={css.select} value={draft?.tag} onChange={handleChange}>
           <option value="">Select tag</option>
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
