@@ -1,8 +1,10 @@
+import { getServerMe } from "@/lib/serverApi";
 import Image from "next/image";
 import Link from "next/link";
 import css from "./ProfilePage.module.css";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+   const user = await getServerMe();
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -15,7 +17,7 @@ export default function ProfilePage() {
 
         <div className={css.avatarWrapper}>
           <Image
-            src="/user-avatar.jpg"
+            src={user.photoUrl || "/avatar"}
             alt="User Avatar"
             width={120}
             height={120}
@@ -24,8 +26,8 @@ export default function ProfilePage() {
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: your_username</p>
-          <p>Email: your_email@example.com</p>
+          <p>Username: {user.userName}</p>
+          <p>Email: {user.email}</p>
         </div>
       </div>
     </main>
