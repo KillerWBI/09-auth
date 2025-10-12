@@ -1,3 +1,4 @@
+// app/layout.tsx
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
 import type { Metadata } from "next";
@@ -32,18 +33,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({children}: Readonly<{ children: React.ReactNode; modal: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={`${roboto.variable}`}>
         <TanStackProvider>
           <AuthProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-         <Footer />
-         </AuthProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </AuthProvider>
         </TanStackProvider>
       </body>
     </html>
