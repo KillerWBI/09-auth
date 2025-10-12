@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import NoteDetailsClient from "./NoteDetails.client";
 
+
 type Props = {
    params: { id: string };
 };

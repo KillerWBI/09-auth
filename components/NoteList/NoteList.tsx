@@ -19,7 +19,7 @@ const deleteMutation = useMutation({
 
 
   if (notes.length === 0) {
-    return null; // нічого не рендеримо, якщо масив пустий
+    return null;
 
   }
 
