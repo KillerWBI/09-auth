@@ -10,11 +10,12 @@ import NoteDetailsClient from "./NoteDetails.client";
 
 
 type Props = {
-   params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({params}: Props): Promise<Metadata> {
-  const  note  = await getSingleNote(params.id);
+  const { id } = await params;
+  const  note  = await getSingleNote(id);
    return {
     title: `${note.title} | NoteHub`,
     description: note.content
@@ -39,7 +40,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
 }
 
 const NoteDetails = async ({ params }: Props) => {
-    const { id } = params;
+    const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
