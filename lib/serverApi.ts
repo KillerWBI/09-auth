@@ -18,7 +18,7 @@ export const checkServerSession = async () => {
 
 export const getServerMe = async (): Promise<User> => {
   const cookieStore = await cookies();
-  const { data } = await NextServer.get('/auth/me', {
+  const { data } = await NextServer.get('/users/me', {
     headers: {
       Cookie: cookieStore.toString(),
     },
