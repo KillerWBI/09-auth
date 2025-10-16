@@ -1,6 +1,6 @@
 // app/notes/[id]/page.tsx
 
-import { getSingleNote } from "@/lib/api";
+import { getSingleNote } from "@/lib/clientApi";
 import {
   HydrationBoundary,
   QueryClient,
