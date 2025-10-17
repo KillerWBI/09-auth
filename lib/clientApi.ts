@@ -42,6 +42,17 @@ type CheckSessionRequest = {
   success: boolean;
 };
 
+ export type UpdateUserRequest = {
+  username?: string;
+  avatar?: string;
+};
+
+export const updateMe = async (payload: UpdateUserRequest): Promise<User> => {
+  const res = await NextServer.patch<User>("/users/me", payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+  return res.data;
+};
 
 
 export const logout = async (): Promise<void> => {
