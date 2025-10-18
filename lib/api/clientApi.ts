@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import type { Note } from "../types/note";
+import type { Note } from "../../types/note";
 import { NextServer } from './api';
 
 

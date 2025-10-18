@@ -1,6 +1,6 @@
 "use client";
 
-import { updateMe } from "@/lib/clientApi";
+import { updateMe } from "@/lib/api/clientApi";
 import { User } from "@/types/user";
 import { AxiosError } from "axios";
 import Image from "next/image";

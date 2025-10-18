@@ -1,4 +1,4 @@
-import { getServerMe } from "@/lib/serverApi";
+import { getServerMe } from "@/lib/api/serverApi";
 import ProfileEditPageWrapper from "./EditProfilePage";
 
 async function ProfileEditPage() {

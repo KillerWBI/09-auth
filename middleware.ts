@@ -2,7 +2,7 @@
 import { parse } from 'cookie';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { checkServerSession } from './lib/serverApi';
+import { checkServerSession } from './lib/api/serverApi';
 
 
 
