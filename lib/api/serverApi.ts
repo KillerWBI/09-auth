@@ -1,3 +1,4 @@
+"use server";
 import type { AxiosResponse } from 'axios';
 import { cookies } from 'next/headers';
 import type { Note } from '../../types/note';

@@ -80,5 +80,22 @@ export async function deleteNote(id: string): Promise<Note> {
   const response: AxiosResponse<Note> = await NextServer.delete(`/notes/${id}`);
   return response.data;
 }
+export async function getSingleNote(id: string): Promise<Note> {
+  const response: AxiosResponse<Note> = await NextServer.get(`/notes/${id}`);
+  return response.data;
+}
 
-
+export async function fetchNotes(
+  search?: string,
+  page: number = 1,
+  tag?: string
+): Promise<NotesResponse> {
+  const response: AxiosResponse<NotesResponse> = await NextServer.get("/notes", {
+    params: {
+      page,
+      ...(search ? { search } : {}),
+      ...(tag ? { tag } : {}),
+    },
+  });
+  return response.data;
+}
