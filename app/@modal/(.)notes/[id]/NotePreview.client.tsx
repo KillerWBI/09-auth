@@ -1,8 +1,9 @@
 "use client";
+import Modal from "@/components/Modal/Modal";
 import { getSingleNote } from "@/lib/api/clientApi";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from 'next/navigation';
-import css from './NoteDetails.module.css';
+import { useParams, useRouter } from 'next/navigation';
+import css from './NotePreview.module.css';
 
 const NoteDetailsClient = () => {
 	const { id } = useParams<{ id: string }>();
@@ -10,8 +11,10 @@ const NoteDetailsClient = () => {
   const { data: note, isLoading, error } = useQuery({
     queryKey: ["note", id],
     queryFn: () => getSingleNote(id),
-    refetchOnMount: true,
+    refetchOnMount: false,
   });
+  const router = useRouter();
+const close = () => router.back();
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -22,6 +25,7 @@ const NoteDetailsClient = () => {
     : `Created at: ${note.createdAt}`;
 
   return (
+    <Modal onClose={close}>
     <div className={css.container}>
 	<div className={css.item}>
 	  <div className={css.header}>
@@ -30,8 +34,15 @@ const NoteDetailsClient = () => {
 	  <p className={css.content}>{note.content}</p>
 	  <p className={css.date}>{formattedDate}</p>
 	</div>
+    <button
+              type="button"
+              className={css.backBtn}
+              onClick={close}
+            >
+              Cancel
+            </button>
 </div>
-
+</Modal>
   );
 };
 
