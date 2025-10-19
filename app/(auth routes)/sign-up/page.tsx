@@ -6,23 +6,24 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import css from './SignUpPage.module.css';
 
-
-
+// ...existing code...
 export default function SignUpPage() {
 
     const router = useRouter();
   const [error, setError] = useState('');
   const setUser = useAuthStore((state) => state.setUser);
 const handleSubmit = async (formData: FormData) => {
-		try {
-	    // Типізуємо дані форми
+        try {
+        // Типізуємо дані форми
       const formValues = Object.fromEntries(formData) as RegisterRequest;
       // Виконуємо запит
       const res = await register(formValues);
       // Виконуємо редірект або відображаємо помилку
       if (res) {
-        router.push('/profile');
+        // Сначала зберігаємо користувача в сторі, потім робимо редірект
         setUser(res);
+        router.push('/profile');
+        setError('');
       } else {
         setError('Invalid email or password');
       }
@@ -33,15 +34,14 @@ const handleSubmit = async (formData: FormData) => {
           'Oops... some error'
       )
     }
-  };
-
-
+};
+// ...existing code...
 
     return (
         <>
         <main className={css.mainContent}>
   <h1 className={css.formTitle}>Sign up</h1>
-	<form className={css.form} action={handleSubmit}>
+    <form className={css.form} action={handleSubmit}>
     <div className={css.formGroup}>
       <label htmlFor="email">Email</label>
       <input id="email" type="email" name="email" className={css.input} required />
@@ -58,9 +58,9 @@ const handleSubmit = async (formData: FormData) => {
       </button>
     </div>
 
-    <p className={css.error}>Error</p>
+    {/* показываем ошибку только когда она есть */}
+    {error && <p className={css.error}>{error}</p>}
   </form>
-  {error && <p>{error}</p>}
 </main>
 
         </>

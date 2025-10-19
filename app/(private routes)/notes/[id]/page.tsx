@@ -1,9 +1,9 @@
 // app/notes/[id]/page.tsx
-import { getSingleNote } from "@/lib/api/clientApi";
+import { getSingleNote } from "@/lib/api/serverApi";
 import {
-    HydrationBoundary,
-    QueryClient,
-    dehydrate,
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import NoteDetailsClient from "./NoteDetails.client";

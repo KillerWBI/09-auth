@@ -1,7 +1,29 @@
 import { getServerMe } from "@/lib/api/serverApi";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import css from "./ProfilePage.module.css";
+
+export const metadata: Metadata = {
+  title: "Profile – NoteHub",
+  description: "User profile page",
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const user = await getServerMe();
+    return {
+      title: `${user.username} — Profile`,
+      description: `Profile of ${user.username} (${user.email})`,
+      openGraph: {
+        title: `${user.username} — Profile`,
+        description: `Profile of ${user.username}`,
+      },
+    };
+  } catch {
+    return metadata;
+  }
+}
 
 export default async function ProfilePage() {
    const user = await getServerMe();

@@ -1,23 +1,19 @@
-// middleware.ts
 import { parse } from 'cookie';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkServerSession } from './lib/api/serverApi';
 
-
-
-const privateRoutes = ['/profile'];
+const privateRoutes = ['/profile', '/notes']; // добавил /notes для защиты
 const authRoutes = ['/sign-in', '/sign-up'];
 
 export async function middleware(request: NextRequest) {
-     const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
   const refreshToken = cookieStore.get('refreshToken')?.value;
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   const isPrivateRoute = privateRoutes.some((route) => pathname.startsWith(route));
-
 
   if (!accessToken) {
     if (refreshToken) {
@@ -66,8 +62,11 @@ export async function middleware(request: NextRequest) {
   if (isPrivateRoute) {
     return NextResponse.next();
   }
+
+  // всегда возвращаем ответ, если ни одна ветка не сработала
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/profile/:path*', '/sign-in', '/sign-up'],
+  matcher: ['/profile/:path*', '/sign-in', '/sign-up', '/notes/:path*'],
 };

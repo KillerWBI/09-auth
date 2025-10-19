@@ -1,24 +1,13 @@
 import type { AxiosResponse } from "axios";
 import type { Note } from "../../types/note";
+import type { User } from "../../types/user";
 import { NextServer } from './api';
-
 
 export type RegisterRequest = {
   email: string;
   password: string;
-  userName: string;
+  username: string;
 };
-
-export type User = {
-  id: string;
-  email: string;
-  userName?: string;
-  photoUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-
 
 // Тип відповіді для колекції нотаток
 export interface NotesResponse {
@@ -32,7 +21,6 @@ export interface NewNoteData {
   tag: string;
 }
 
-
 export type LoginRequest = {
   email: string;
   password: string;
@@ -42,7 +30,7 @@ type CheckSessionRequest = {
   success: boolean;
 };
 
- export type UpdateUserRequest = {
+export type UpdateUserRequest = {
   username?: string;
   avatar?: string;
 };
@@ -54,11 +42,9 @@ export const updateMe = async (payload: UpdateUserRequest): Promise<User> => {
   return res.data;
 };
 
-
 export const logout = async (): Promise<void> => {
-  await NextServer.post('/auth/logout')
+  await NextServer.post('/auth/logout');
 };
-
 
 export const checkSession = async () => {
   const res = await NextServer.get<CheckSessionRequest>('/auth/session');
@@ -75,32 +61,13 @@ export const login = async (data: LoginRequest) => {
   return res.data;
 };
 
-
 export const register = async (data: RegisterRequest) => {
   const res = await NextServer.post<User>('/auth/register', data);
   return res.data;
 };
 
-
-
-
-
-
 // 1. Отримати список нотаток (підтримує пагінацію та пошук)
-export async function fetchNotes(
-  search?: string,
-  page: number = 1,
-  tag?: string
-): Promise<NotesResponse> {
-  const response: AxiosResponse<NotesResponse> = await NextServer.get("/notes", {
-    params: {
-      page,
-      ...(search ? { search } : {}),
-      ...(tag ? { tag } : {}),
-    },
-  });
-  return response.data;
-}
+
 
 // 2. Створити нову нотатку
 export async function createNote(data: NewNoteData): Promise<Note> {
@@ -115,7 +82,3 @@ export async function deleteNote(id: string): Promise<Note> {
 }
 
 
-export async function getSingleNote(id: string): Promise<Note> {
-  const response: AxiosResponse<Note> = await NextServer.get(`/notes/${id}`);
-  return response.data;
-}

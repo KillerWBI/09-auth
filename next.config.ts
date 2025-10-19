@@ -1,18 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-   turbopack: {
+  turbopack: {
     root: __dirname,
   },
-images: {
-    domains: [
-      "ac.goit.global", // 👈 добавили домен с твоей ошибкой
-      "zastavki.gas-kvas.com", // если ты используешь аватар оттуда
-      "localhost", // если локальные API или статика
+  images: {
+    // Используем remotePatterns вместо domains, как требуется
+    remotePatterns: [
+      { protocol: "https", hostname: "ac.goit.global" },
+      { protocol: "https", hostname: "zastavki.gas-kvas.com" },
+      { protocol: "http", hostname: "localhost", port: "3000" },
+      { protocol: "http", hostname: "127.0.0.1", port: "3000" },
     ],
   },
 };
 
 export default nextConfig;
-
