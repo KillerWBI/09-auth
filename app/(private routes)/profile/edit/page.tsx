@@ -2,6 +2,7 @@
 
 import { updateMe } from "@/lib/api/clientApi";
 import { getServerMe } from "@/lib/api/serverApi";
+import { useAuthStore } from "@/lib/store/authStore";
 import type { User } from "@/types/user";
 import { AxiosError } from "axios";
 import Image from "next/image";
@@ -11,17 +12,17 @@ import css from "./EditProfilePage.module.css";
 
 export default function ProfileEditPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setLocalUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string>("");
-
 
   useEffect(() => {
     (async () => {
       try {
         const me = await getServerMe();
         if (!me) router.push("/sign-in");
-        setUser(me);
+        setLocalUser(me);
         setUsername(me.username || "");
       } catch {
         router.push("/sign-in");
@@ -33,8 +34,14 @@ export default function ProfileEditPage() {
     e.preventDefault();
 
     try {
-      await updateMe({ username: username.trim() });
-      router.push("/profile"); // редірект після успішного оновлення
+
+      const updatedUser = await updateMe({ username: username.trim() });
+
+
+      setUser(updatedUser);
+
+
+      router.push("/profile");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Axios error:", error.response?.data || error.message);

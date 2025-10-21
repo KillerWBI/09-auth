@@ -1,27 +1,27 @@
 "use server";
-import type { AxiosResponse } from 'axios';
-import { cookies } from 'next/headers';
-import type { Note } from '../../types/note';
-import type { User } from '../../types/user';
-import { NextServer } from './api';
-import type { NotesResponse } from './clientApi';
 
+import type { AxiosResponse } from "axios";
+import { cookies } from "next/headers";
+import type { Note } from "../../types/note";
+import type { User } from "../../types/user";
+import { NextServer } from "./api";
+import type { NotesResponse } from "./clientApi";
+
+// ✅ Перевірка сесії
 export const checkServerSession = async () => {
-  // Дістаємо поточні cookie
   const cookieStore = await cookies();
-  const res = await NextServer.get('/auth/session', {
+  const res = await NextServer.get("/auth/session", {
     headers: {
-      // передаємо кукі далі
       Cookie: cookieStore.toString(),
     },
   });
-  // Повертаємо повний респонс, щоб middleware мав доступ до нових cookie
   return res;
 };
 
+// ✅ Отримання поточного користувача
 export const getServerMe = async (): Promise<User> => {
   const cookieStore = await cookies();
-  const { data } = await NextServer.get('/users/me', {
+  const { data } = await NextServer.get("/users/me", {
     headers: {
       Cookie: cookieStore.toString(),
     },
@@ -29,7 +29,7 @@ export const getServerMe = async (): Promise<User> => {
   return data;
 };
 
-// New: отримати нотатку серверно за id
+// ✅ Отримання конкретної нотатки
 export const getServerNote = async (id: string): Promise<Note> => {
   const cookieStore = await cookies();
   const { data } = await NextServer.get(`/notes/${id}`, {
@@ -40,22 +40,33 @@ export const getServerNote = async (id: string): Promise<Note> => {
   return data;
 };
 
+// ✅ Отримання списку нотаток (з кукі)
 export async function fetchNotes(
   search?: string,
   page: number = 1,
   tag?: string
 ): Promise<NotesResponse> {
+  const cookieStore = await cookies();
   const response: AxiosResponse<NotesResponse> = await NextServer.get("/notes", {
     params: {
       page,
       ...(search ? { search } : {}),
       ...(tag ? { tag } : {}),
     },
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
   });
   return response.data;
 }
 
+// ✅ Отримання однієї нотатки (з кукі)
 export async function getSingleNote(id: string): Promise<Note> {
-  const response: AxiosResponse<Note> = await NextServer.get(`/notes/${id}`);
+  const cookieStore = await cookies();
+  const response: AxiosResponse<Note> = await NextServer.get(`/notes/${id}`, {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
   return response.data;
 }
