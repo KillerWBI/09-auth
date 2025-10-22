@@ -1,7 +1,6 @@
 "use client";
 
-import { updateMe } from "@/lib/api/clientApi";
-import { getServerMe } from "@/lib/api/serverApi";
+import { getMe, updateMe } from "@/lib/api/clientApi";
 import { useAuthStore } from "@/lib/store/authStore";
 import type { User } from "@/types/user";
 import { AxiosError } from "axios";
@@ -12,35 +11,34 @@ import css from "./EditProfilePage.module.css";
 
 export default function ProfileEditPage() {
   const router = useRouter();
-  const { setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
 
-  const [user, setLocalUser] = useState<User | null>(null);
-  const [username, setUsername] = useState<string>("");
+  const [localUser, setLocalUser] = useState<User | null>(user);
+  const [username, setUsername] = useState<string>(user?.username || "");
 
+  // ✅ Коли компонент монтується — якщо немає користувача в Zustand, запитуємо через clientApi
   useEffect(() => {
     (async () => {
       try {
-        const me = await getServerMe();
-        if (!me) router.push("/sign-in");
-        setLocalUser(me);
-        setUsername(me.username || "");
+        if (!user) {
+          const me = await getMe();
+          if (!me) router.push("/sign-in");
+          setUser(me);
+          setLocalUser(me);
+          setUsername(me.username || "");
+        }
       } catch {
         router.push("/sign-in");
       }
     })();
-  }, [router]);
+  }, [user, setUser, router]);
 
   const handleSaveUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-
       const updatedUser = await updateMe({ username: username.trim() });
-
-
       setUser(updatedUser);
-
-
       router.push("/profile");
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -52,7 +50,7 @@ export default function ProfileEditPage() {
     }
   };
 
-  if (!user) return null;
+  if (!localUser) return null;
 
   return (
     <main className={css.mainContent}>
@@ -61,8 +59,8 @@ export default function ProfileEditPage() {
 
         <Image
           src={
-            user.avatar?.trim()
-              ? user.avatar
+            localUser.avatar?.trim()
+              ? localUser.avatar
               : "https://ac.goit.global/fullstack/react/default-avatar.jpg"
           }
           alt="User Avatar"
@@ -84,7 +82,7 @@ export default function ProfileEditPage() {
             />
           </div>
 
-          <p>Email: {user.email}</p>
+          <p>Email: {localUser.email}</p>
 
           <div className={css.actions}>
             <button type="submit" className={css.saveButton}>
